@@ -25,16 +25,22 @@ namespace ImmManager
             Font fontNote = FontFactory.GetFont("Arial", 10, Font.ITALIC, BaseColor.BLUE);
             // setup Chinese fonts
             // Kai Fonts
-            //string cfontpath = @"C:\C#\Chinesefonts\XinshuFont.ttf";
-            //BaseFont bf = BaseFont.CreateFont(cfontpath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            //Font cfontContent = new Font(bf, 11);
-            //Font cfontHeader = new Font(bf, 12);
+            string cfontpath = @"C:\C#\Chinesefonts\XinshuFont.ttf";
+            BaseFont bf = BaseFont.CreateFont(cfontpath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font cfontContent = new Font(bf, 11);
+            Font cfontHeader = new Font(bf, 12);
 
-            // Kai Fonts
-            //static string cfontpath-1 = @"C:\C#\Chinesefonts\kaiBoldFont.ttf";
-            //static BaseFont bf-1 = BaseFont.CreateFont(cfontpath-1, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            //static Font cfontContent-1 = new Font(bf-1, 11);
-            //static Font cfontHeader-1 = new Font(bf-1, 12);
+            //Kai Fonts
+            string cfontpath1 = @"C:\C#\Chinesefonts\kaiBoldFont.ttf";
+            BaseFont bf1 = BaseFont.CreateFont(cfontpath1, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font cfontNote = new Font(bf1, 10);
+
+            Font cfontLevel1 = new Font(bf1, 24);
+            Font cfontLevel2 = new Font(bf1, 24);
+            Font cfontLevel3 = new Font(bf1, 24);
+            Font cfontLevel4 = new Font(bf1, 24);
+            Font cfontLevel5 = new Font(bf1, 24);
+
 
 
             Document doc = new Document(PageSize.LETTER, 72, 72, 72, 72);
@@ -53,14 +59,14 @@ namespace ImmManager
             doc.Add(new Paragraph("\n\n\n"));
 
             Paragraph Title = (new Paragraph(18.5f, " BCPNP Skill Worker Consultation", fontLevel1) { SpacingAfter = 5 });
-            Paragraph paraforClient = (new Paragraph(18.5f, "For: " + sw.Client + "   Date:" + DateTime.Today.ToString("MMM-dd,yyyy"), fontLevel2) { SpacingAfter = 5 });
+            Paragraph paraforClient = (new Paragraph(18.5f, "For: " + sw.Client + "   Date:" + DateTime.Today.ToString("MMM-dd,yyyy"), cfontLevel4) { SpacingAfter = 5 });
             Title.Alignment = Element.ALIGN_CENTER;
             paraforClient.Alignment = Element.ALIGN_CENTER;
             ////para.IndentationRight = 10;
             doc.Add(Title);
             doc.Add(paraforClient);
 
-            doc.Add(new Phrase(18.5f, "\nNOC: " + sw.NOC + "\t\tTotal Points: " + sw.TotalPoints.ToString() + "\n\n", fontTitle4));
+            doc.Add(new Phrase(18.5f, "\nNOC: " + sw.NOC + "     Total Points: " + sw.TotalPoints.ToString() + "\n\n", fontTitle4));
 
             //p.IndentationRight = 100;
             //p.IndentationLeft = 100;
@@ -70,13 +76,13 @@ namespace ImmManager
             // float[] width = new float[3] { toUnit(2.17f),toUnit(2.17f),toUnit(2.17f)};
             table.WidthPercentage = 100;
             table.GetFittingRows(18f, 0);
-            PdfPCell cell = new PdfPCell(new Phrase((sw.Client + " BCPNP Skill Worker Scores"), fontLevel4));
+            PdfPCell cell = new PdfPCell(new Phrase((sw.Client + " Scores in detail"), fontTitle3));
             cell.Colspan = 3;
 
             cell.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
             table.AddCell(cell);
 
-           
+
             table.AddCell("Client");
             table.AddCell("NOC");
             table.AddCell("Total Points");
@@ -91,16 +97,72 @@ namespace ImmManager
             c22.HorizontalAlignment = 1;
             table.AddCell(c22);
 
-            PdfPCell c32 = new PdfPCell(new Phrase(sw.TotalPoints.ToString()));
+            PdfPCell c23 = new PdfPCell(new Phrase(sw.TotalPoints.ToString()));
+            c23.HorizontalAlignment = 1;
+            table.AddCell(c23);
+
+            table.AddCell("00 Bonus");
+            table.AddCell("Skill Level");
+            table.AddCell("Top 100 Bonus");
+            PdfPCell c31 = new PdfPCell(new Phrase(sw.NocBonusPoints.ToString()));
+            table.AddCell(c31);
+            c31.HorizontalAlignment = 1;
+
+            PdfPCell c32 = new PdfPCell(new Phrase(sw.SkillLevelPoints.ToString()));
             c32.HorizontalAlignment = 1;
             table.AddCell(c32);
+
+            PdfPCell c33 = new PdfPCell(new Phrase(sw.Top100Bonus.ToString()));
+            c33.HorizontalAlignment = 1;
+            table.AddCell(c33);
+
+            table.AddCell("Current working in BC");
+            table.AddCell("Annual Wage points");
+            table.AddCell("Region points");
+            PdfPCell c41 = new PdfPCell(new Phrase(sw.CurrentWorkPoints.ToString()));
+            table.AddCell(c41);
+            c41.HorizontalAlignment = 1;
+
+            PdfPCell c42 = new PdfPCell(new Phrase(sw.WagePoints.ToString()));
+            c42.HorizontalAlignment = 1;
+            table.AddCell(c42);
+
+            PdfPCell c43 = new PdfPCell(new Phrase(sw.RegionPoints.ToString()));
+            c43.HorizontalAlignment = 1;
+            table.AddCell(c43);
+
+            table.AddCell("Direct Work Exp");
+            table.AddCell("1 year in BC");
+            table.AddCell("Education points");
+            PdfPCell c51 = new PdfPCell(new Phrase(sw.DirectWorkExperiencePoints.ToString()));
+            table.AddCell(c51);
+            c51.HorizontalAlignment = 1;
+
+            PdfPCell c52 = new PdfPCell(new Phrase(sw.OneYearDirectExperienceInCanadaPoints.ToString()));
+            c52.HorizontalAlignment = 1;
+            table.AddCell(c52);
+
+            PdfPCell c53 = new PdfPCell(new Phrase(sw.EducationPoints.ToString()));
+            c53.HorizontalAlignment = 1;
+            table.AddCell(c53);
+
+            table.AddCell("Education Bonus");
+            table.AddCell("Language points");
+
+            PdfPCell c61 = new PdfPCell(new Phrase(sw.EducationBonusPoints.ToString()));
+            table.AddCell(c61);
+            c61.HorizontalAlignment = 1;
+
+            PdfPCell c62 = new PdfPCell(new Phrase(sw.CLBPoints.ToString()));
+            c62.HorizontalAlignment = 1;
+            table.AddCell(c62);
 
 
 
             doc.Add(table);
 
 
-            Chunk thanks = new Chunk("Thanks for your enquiry\n\n");
+            Chunk thanks = new Chunk("\n\nThanks for your enquiry\n\n");
             //  sign.Leading = 36;
             doc.Add(thanks);
             RCICSigning(doc);
@@ -118,16 +180,14 @@ namespace ImmManager
             //MessageBox.Show("File created");
 
             // Open the new created pdf
-            Process myProcess = new Process();
-            myProcess.StartInfo.FileName = "acroRd32.exe"; //not the full application path
-            myProcess.StartInfo.Arguments = @" C:\vba\hello.pdf";
-            myProcess.Start();
+            System.Diagnostics.Process.Start(@"c:\vba\hello.pdf");
+
 
         }
 
         private static void RCICSigning(Document doc)
         {
-            Image signature = Image.GetInstance(@"c:\vba\signature-jacky.png");
+            Image signature = Image.GetInstance(@"c:\vba\Signature.jpg");
             //signature.SetAbsolutePosition(toUnit(5.5f), toUnit(9.75f));
             // set the size to be 2.5 inch x 1.5 inch
             signature.ScaleToFit(toUnit(1.2f), toUnit(0.6f));

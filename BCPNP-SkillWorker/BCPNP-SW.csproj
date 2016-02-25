@@ -52,13 +52,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="itextsharp">
-      <HintPath>..\..\LoginApp\LoginApp\itextsharp.dll</HintPath>
+      <HintPath>..\..\..\C#\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp.pdfa">
-      <HintPath>..\..\LoginApp\LoginApp\itextsharp.pdfa.dll</HintPath>
+      <HintPath>..\..\..\C#\itextsharp.pdfa.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp.xtra">
-      <HintPath>..\..\LoginApp\LoginApp\itextsharp.xtra.dll</HintPath>
+      <HintPath>..\..\..\C#\itextsharp.xtra.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -88,9 +88,6 @@
     <Compile Include="Top100.Designer.cs">
       <DependentUpon>Top100.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="BCPNP-Skill-Worker.dje.resx">
-      <DependentUpon>BCPNP-Skill-Worker.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="BCPNP-Skill-Worker.resx">
       <DependentUpon>BCPNP-Skill-Worker.cs</DependentUpon>
     </EmbeddedResource>
