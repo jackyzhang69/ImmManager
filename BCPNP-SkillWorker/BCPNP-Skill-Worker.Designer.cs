@@ -64,7 +64,6 @@
             this.cmbRegion = new System.Windows.Forms.ComboBox();
             this.cmbEducaton = new System.Windows.Forms.ComboBox();
             this.lblTop100 = new System.Windows.Forms.Label();
-            this.cmbEduBonus = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lblEduBonusPoints = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -92,8 +91,13 @@
             this.txtListening = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.btnReport = new System.Windows.Forms.Button();
+            this.GrpEducation = new System.Windows.Forms.GroupBox();
+            this.cklEduBonus = new System.Windows.Forms.CheckedListBox();
+            this.lblEduPoints = new System.Windows.Forms.Label();
+            this.llblNOCforMainduty = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.GrpEducation.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -296,14 +300,6 @@
             resources.ApplyResources(this.lblTop100, "lblTop100");
             this.lblTop100.Name = "lblTop100";
             // 
-            // cmbEduBonus
-            // 
-            this.cmbEduBonus.FormattingEnabled = true;
-            resources.ApplyResources(this.cmbEduBonus, "cmbEduBonus");
-            this.cmbEduBonus.Name = "cmbEduBonus";
-            this.cmbEduBonus.SelectionChangeCommitted += new System.EventHandler(this.cmbEduBonus_SelectionChangeCommitted);
-            this.cmbEduBonus.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmbEduBonus_KeyDown);
-            // 
             // label3
             // 
             resources.ApplyResources(this.label3, "label3");
@@ -485,10 +481,45 @@
             this.btnReport.UseVisualStyleBackColor = true;
             this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
             // 
+            // GrpEducation
+            // 
+            this.GrpEducation.Controls.Add(this.cklEduBonus);
+            this.GrpEducation.Controls.Add(this.cmbEducaton);
+            this.GrpEducation.Controls.Add(this.label3);
+            this.GrpEducation.Controls.Add(this.lblEduBonusPoints);
+            this.GrpEducation.Controls.Add(this.label8);
+            this.GrpEducation.Controls.Add(this.lblEducationPoints);
+            resources.ApplyResources(this.GrpEducation, "GrpEducation");
+            this.GrpEducation.Name = "GrpEducation";
+            this.GrpEducation.TabStop = false;
+            // 
+            // cklEduBonus
+            // 
+            this.cklEduBonus.CheckOnClick = true;
+            this.cklEduBonus.FormattingEnabled = true;
+            resources.ApplyResources(this.cklEduBonus, "cklEduBonus");
+            this.cklEduBonus.Name = "cklEduBonus";
+            this.cklEduBonus.SelectedIndexChanged += new System.EventHandler(this.cklEduBonus_SelectedIndexChanged);
+            // 
+            // lblEduPoints
+            // 
+            resources.ApplyResources(this.lblEduPoints, "lblEduPoints");
+            this.lblEduPoints.Name = "lblEduPoints";
+            // 
+            // llblNOCforMainduty
+            // 
+            resources.ApplyResources(this.llblNOCforMainduty, "llblNOCforMainduty");
+            this.llblNOCforMainduty.Name = "llblNOCforMainduty";
+            this.llblNOCforMainduty.TabStop = true;
+            this.llblNOCforMainduty.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llblNOCforMainduty_LinkClicked);
+            // 
             // BCPNP_Skill_Worker
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.llblNOCforMainduty);
+            this.Controls.Add(this.lblEduPoints);
+            this.Controls.Add(this.GrpEducation);
             this.Controls.Add(this.btnReport);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.lklblJobBank);
@@ -496,14 +527,9 @@
             this.Controls.Add(this.btnTop100);
             this.Controls.Add(this.lblJobLevel);
             this.Controls.Add(this.label15);
-            this.Controls.Add(this.lblEduBonusPoints);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.cmbEduBonus);
             this.Controls.Add(this.lblTop100);
-            this.Controls.Add(this.cmbEducaton);
             this.Controls.Add(this.cmbRegion);
             this.Controls.Add(this.lblCLBpoints);
-            this.Controls.Add(this.lblEducationPoints);
             this.Controls.Add(this.lblCanadianExpPoints);
             this.Controls.Add(this.lblDirectWorkExpPoints);
             this.Controls.Add(this.lblRegionalPoints);
@@ -523,7 +549,6 @@
             this.Controls.Add(this.label10);
             this.Controls.Add(this.txtCLBLevel);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.label8);
             this.Controls.Add(this.txtDirectWorkExp);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -539,6 +564,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.GrpEducation.ResumeLayout(false);
+            this.GrpEducation.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -581,7 +608,6 @@
         private System.Windows.Forms.ComboBox cmbRegion;
         private System.Windows.Forms.ComboBox cmbEducaton;
         private System.Windows.Forms.Label lblTop100;
-        private System.Windows.Forms.ComboBox cmbEduBonus;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblEduBonusPoints;
         private System.Windows.Forms.Label label15;
@@ -609,5 +635,9 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.ComboBox cmbTestType;
         private System.Windows.Forms.Button btnReport;
+        private System.Windows.Forms.GroupBox GrpEducation;
+        private System.Windows.Forms.CheckedListBox cklEduBonus;
+        private System.Windows.Forms.Label lblEduPoints;
+        private System.Windows.Forms.LinkLabel llblNOCforMainduty;
     }
 }

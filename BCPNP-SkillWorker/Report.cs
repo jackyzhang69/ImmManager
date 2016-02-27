@@ -3,8 +3,9 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
 using System;
-using System.Windows.Forms;
-using System.Collections.Generic;
+using System.Reflection;
+using System.Drawing.Imaging;
+using ToolLib;
 
 namespace ImmManager
 {
@@ -13,174 +14,136 @@ namespace ImmManager
 
         public static void generateReport(SWInfo sw)
         {
-
-            Font fontLevel1 = FontFactory.GetFont("Arial", 24, Font.BOLD, BaseColor.BLACK);
-            Font fontLevel2 = FontFactory.GetFont("Arial", 20, Font.BOLD, BaseColor.BLACK);
-            Font fontLevel3 = FontFactory.GetFont("Arial", 18, Font.BOLD, BaseColor.BLACK);
-            Font fontLevel4 = FontFactory.GetFont("Arial", 18, Font.BOLD, BaseColor.BLACK);
-            Font fontTitle3 = FontFactory.GetFont("Arial", 16, Font.BOLD, BaseColor.BLACK);
-            Font fontTitle4 = FontFactory.GetFont("Arial", 12, Font.BOLD, BaseColor.BLACK);
-            Font fontBody = FontFactory.GetFont("Arial", 10, Font.BOLD, BaseColor.BLACK);
-            Font fontFoot = FontFactory.GetFont("Arial", 10, Font.BOLD, BaseColor.BLACK);
-            Font fontNote = FontFactory.GetFont("Arial", 10, Font.ITALIC, BaseColor.BLUE);
-            // setup Chinese fonts
-            // Kai Fonts
-            string cfontpath = @"C:\C#\Chinesefonts\XinshuFont.ttf";
-            BaseFont bf = BaseFont.CreateFont(cfontpath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            Font cfontContent = new Font(bf, 11);
-            Font cfontHeader = new Font(bf, 12);
-
-            //Kai Fonts
-            string cfontpath1 = @"C:\C#\Chinesefonts\kaiBoldFont.ttf";
-            BaseFont bf1 = BaseFont.CreateFont(cfontpath1, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            Font cfontNote = new Font(bf1, 10);
-
-            Font cfontLevel1 = new Font(bf1, 24);
-            Font cfontLevel2 = new Font(bf1, 24);
-            Font cfontLevel3 = new Font(bf1, 24);
-            Font cfontLevel4 = new Font(bf1, 24);
-            Font cfontLevel5 = new Font(bf1, 24);
+            string[,] info = new string[,] {
+                {"Calculation Items","Your Condition","Your Points" },
+                {"Some NOC codes could get bonus",sw.NOC,sw.NocBonusPoints.ToString()},
+                {"Skill level and points",sw.SkillLevel.ToString(),sw.JobLevelPoints.ToString()},
+                {"Is your job in Top 100",sw.Intop100?"Yes":"No",sw.Top100Bonus.ToString()},
+                {"Current in BC working in same occupation",sw.CurrentWorkInBCPosition?"Yes":"No",sw.CurrentWorkPoints.ToString()},
+                {"Annual job wage",sw.Wage.ToString(), sw.WagePoints.ToString()},
+                {"Work region", sw.Region,sw.RegionPoints.ToString()},
+                {"Direct related work experience",sw.DirectWorkExperience.ToString(),sw.DirectWorkExperiencePoints.ToString()},
+                {"One year direct experience in Canada",sw.OneYearDirectExperienceInCanada?"Yes":"No",sw.OneYearDirectExperienceInCanadaPoints.ToString()},
+                {"Education Level",sw.Education, sw.EducationPoints.ToString()},
+                {"Education bonus",sw.EducationBonus,sw.EducationBonusPoints.ToString() },
+                {"CLB Luange level",sw.CLB.ToString(),sw.CLBPoints.ToString()}
+            };
 
 
 
             Document doc = new Document(PageSize.LETTER, 72, 72, 72, 72);
-
-            PdfWriter.GetInstance(doc, new FileStream(@"c:\vba\hello.pdf", FileMode.Create));
+            
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string fn = path + @"\BCPNP-SW Points-" + sw.Client + DateTime.Now.ToString("yyMMdd") + "-" + String.Format("{0:hh}", DateTime.Now) + String.Format("{0:mm}", DateTime.Now) + String.Format("{0:ss}", DateTime.Now) + ".pdf";
+            PdfWriter.GetInstance(doc, new FileStream(fn, FileMode.Create));
 
             doc.Open();
 
             // add a img to pdf
-            Image img = Image.GetInstance(@"c:\vba\logo.png");
-            img.SetAbsolutePosition(toUnit(5.5f), toUnit(9.75f));
+
+            iTextSharp.text.Image img = iTextSharp.text.Image.GetInstance(@"Resources\logo.png");
+
+            img.SetAbsolutePosition(toUnit(5f), toUnit(9.75f));
             // set the size to be 2.5 inch x 1.5 inch
             img.ScaleToFit(toUnit(2.5f), toUnit(1.5f));
             doc.Add(img);
 
             doc.Add(new Paragraph("\n\n\n"));
 
-            Paragraph Title = (new Paragraph(18.5f, " BCPNP Skill Worker Consultation", fontLevel1) { SpacingAfter = 5 });
-            Paragraph paraforClient = (new Paragraph(18.5f, "For: " + sw.Client + "   Date:" + DateTime.Today.ToString("MMM-dd,yyyy"), cfontLevel4) { SpacingAfter = 5 });
+            PDFItems font = new PDFItems();
+
+            Paragraph Title = (new Paragraph(18.5f, " BCPNP Skill Worker Scoring Anlaysis", font.fontLevel3) { SpacingAfter = 15 });
+            Paragraph paraforClient = (new Paragraph(18.5f, "For: " + sw.Client + "   Date: " + DateTime.Today.ToString("MMM-dd,yyyy") + "     Total Points: " + sw.TotalPoints.ToString(), font.fontLevel6) { SpacingAfter = 10 });
             Title.Alignment = Element.ALIGN_CENTER;
             paraforClient.Alignment = Element.ALIGN_CENTER;
             ////para.IndentationRight = 10;
             doc.Add(Title);
             doc.Add(paraforClient);
 
-            doc.Add(new Phrase(18.5f, "\nNOC: " + sw.NOC + "     Total Points: " + sw.TotalPoints.ToString() + "\n\n", fontTitle4));
 
-            //p.IndentationRight = 100;
-            //p.IndentationLeft = 100;
             PdfPTable table = new PdfPTable(3);
+            float[] sglTblHdWidths = new float[3];
+            sglTblHdWidths[0] = 300f;
+            sglTblHdWidths[1] = 200f;
+            sglTblHdWidths[2] = 100f;
+            // Set the column widths on table creation. Unlike HTML cells cannot be sized.
+            table.SetWidths(sglTblHdWidths);
 
             table.HorizontalAlignment = Element.ALIGN_MIDDLE;
             // float[] width = new float[3] { toUnit(2.17f),toUnit(2.17f),toUnit(2.17f)};
             table.WidthPercentage = 100;
             table.GetFittingRows(18f, 0);
-            PdfPCell cell = new PdfPCell(new Phrase((sw.Client + " Scores in detail"), fontTitle3));
+            PdfPCell cell = new PdfPCell(new Phrase((sw.Client + " Scores in detail\n"), font.fontLevel5));
             cell.Colspan = 3;
 
             cell.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
             table.AddCell(cell);
 
 
-            table.AddCell("Client");
-            table.AddCell("NOC");
-            table.AddCell("Total Points");
+            for(int i = 0; i < info.Length / 3; i++)
+            {
+                table.AddCell(info[i, 0]);
+                table.AddCell(info[i, 1]);
+                table.AddCell(info[i, 2]);
 
-
-
-            PdfPCell c21 = new PdfPCell(new Phrase(sw.Client));
-            table.AddCell(c21);
-            c21.HorizontalAlignment = 1;
-
-            PdfPCell c22 = new PdfPCell(new Phrase(sw.NOC));
-            c22.HorizontalAlignment = 1;
-            table.AddCell(c22);
-
-            PdfPCell c23 = new PdfPCell(new Phrase(sw.TotalPoints.ToString()));
-            c23.HorizontalAlignment = 1;
-            table.AddCell(c23);
-
-            table.AddCell("00 Bonus");
-            table.AddCell("Skill Level");
-            table.AddCell("Top 100 Bonus");
-            PdfPCell c31 = new PdfPCell(new Phrase(sw.NocBonusPoints.ToString()));
-            table.AddCell(c31);
-            c31.HorizontalAlignment = 1;
-
-            PdfPCell c32 = new PdfPCell(new Phrase(sw.SkillLevelPoints.ToString()));
-            c32.HorizontalAlignment = 1;
-            table.AddCell(c32);
-
-            PdfPCell c33 = new PdfPCell(new Phrase(sw.Top100Bonus.ToString()));
-            c33.HorizontalAlignment = 1;
-            table.AddCell(c33);
-
-            table.AddCell("Current working in BC");
-            table.AddCell("Annual Wage points");
-            table.AddCell("Region points");
-            PdfPCell c41 = new PdfPCell(new Phrase(sw.CurrentWorkPoints.ToString()));
-            table.AddCell(c41);
-            c41.HorizontalAlignment = 1;
-
-            PdfPCell c42 = new PdfPCell(new Phrase(sw.WagePoints.ToString()));
-            c42.HorizontalAlignment = 1;
-            table.AddCell(c42);
-
-            PdfPCell c43 = new PdfPCell(new Phrase(sw.RegionPoints.ToString()));
-            c43.HorizontalAlignment = 1;
-            table.AddCell(c43);
-
-            table.AddCell("Direct Work Exp");
-            table.AddCell("1 year in BC");
-            table.AddCell("Education points");
-            PdfPCell c51 = new PdfPCell(new Phrase(sw.DirectWorkExperiencePoints.ToString()));
-            table.AddCell(c51);
-            c51.HorizontalAlignment = 1;
-
-            PdfPCell c52 = new PdfPCell(new Phrase(sw.OneYearDirectExperienceInCanadaPoints.ToString()));
-            c52.HorizontalAlignment = 1;
-            table.AddCell(c52);
-
-            PdfPCell c53 = new PdfPCell(new Phrase(sw.EducationPoints.ToString()));
-            c53.HorizontalAlignment = 1;
-            table.AddCell(c53);
-
-            table.AddCell("Education Bonus");
-            table.AddCell("Language points");
-
-            PdfPCell c61 = new PdfPCell(new Phrase(sw.EducationBonusPoints.ToString()));
-            table.AddCell(c61);
-            c61.HorizontalAlignment = 1;
-
-            PdfPCell c62 = new PdfPCell(new Phrase(sw.CLBPoints.ToString()));
-            c62.HorizontalAlignment = 1;
-            table.AddCell(c62);
-
-
+            }
 
             doc.Add(table);
 
 
-            Chunk thanks = new Chunk("\n\nThanks for your enquiry\n\n");
+            Chunk thanks = new Chunk("\nThanks for your enquiry.\nIf you have further requirement for how to upgrade your scores, please make an appointment with our ICCRC licensed Immigration Consultant.\n\n");
             //  sign.Leading = 36;
             doc.Add(thanks);
-            RCICSigning(doc);
-            table.SpacingAfter = 0;
-            Chunk sign = new Chunk("Jacky Zhang\nRCIC: R511623\n");
-            doc.Add(sign);
+            //RCICSigning(doc);
+            //table.SpacingAfter = 0;
+            //Chunk sign = new Chunk("Jacky Zhang\nRCIC: R511623\n");
+            //doc.Add(sign);
 
             //float curY = writer.GetVerticalPosition(false);
             //float x = doc.Left + sign.GetWidthPoint();
             //MessageBox.Show(x.ToString());
 
+            Chunk contact1 = new Chunk("\n\n\nContact Information\nGuangson Headquarter:\n#1017 4500 Kingsway, Burnaby V5H 2A9\nEmail:info@guangson.com\tTel:+ 1 604 - 282 - 1536");
+            //contact1.Font = fontBody;
+            doc.Add(contact1);
+
+            
+
+            Chunk contact2 = new Chunk("\nGuangson Immigration:\n#2319 4500 Kingsway, Burnaby V5H 2A9\nEmail:immigration@guangson.com\t+ 1 604-558-1536");
+            //contact2.Font = cxfontLevel1;
+            doc.Add(contact2);
+            //BaseFont.AddToResourceSearch("iTextAsian.dll");
+            BaseFont bfChinese = BaseFont.CreateFont(
+               "MHei-Medium",
+               "UniCNS-UCS2-H", // 橫式中文
+               BaseFont.NOT_EMBEDDED
+            );
+            Font fontChinese = new Font(bfChinese, 8);
+            doc.Add(new Paragraph(
+                @"聰明難，糊塗難，
+                由聰明而轉入糊塗更難，
+                放一著，退一步，當下心安，非圖後來福報也。",
+                fontChinese
+            ));
+            doc.Add(new Paragraph(
+                @"1991年9月—1996年6月：
+                哈尔滨市马家沟小学
+                1996年9月—2000年6月：
+                哈尔滨市萧红中学
+                2000年9月—2003年6月：
+                哈尔滨市第十三中学
+                2003年9月—2005年5月：
+                加拿大多伦多Seneca学院（ESL）
+                2006年9月—2010年6月:
+                哈尔滨师范大学运动训练专业",
+                fontChinese
+            ));
+
 
             doc.Close();
 
-            //MessageBox.Show("File created");
-
             // Open the new created pdf
-            System.Diagnostics.Process.Start(@"c:\vba\hello.pdf");
+            System.Diagnostics.Process.Start(fn);
 
 
         }

@@ -51,6 +51,9 @@
     <StartupObject>ImmManager.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="iTextAsian">
+      <HintPath>..\..\..\C#\iTextAsian.dll</HintPath>
+    </Reference>
     <Reference Include="itextsharp">
       <HintPath>..\..\..\C#\itextsharp.dll</HintPath>
     </Reference>
@@ -92,7 +95,7 @@
       <DependentUpon>BCPNP-Skill-Worker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -138,6 +141,11 @@
       <Project>{3ab47a22-446c-41d1-82a6-404e62757191}</Project>
       <Name>ToolLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

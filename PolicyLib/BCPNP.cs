@@ -206,7 +206,7 @@ namespace CIPolicyLib
         // Education bonus points policy
         public string[,] eduBonus = new string[,]
         {
-            {"  ","0" },
+           // {"  ","0" },
             {"Post-secondary education completed in B.C","8" },
             {"Post-secondary education completed in Canada (outside of B.C.)","6" },
             {"Education Credential Assessment from a qualified supplier","4" },

@@ -6,6 +6,7 @@ using ToolLib;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 
 namespace ImmManager
 {
@@ -31,7 +32,7 @@ namespace ImmManager
             // initialize education bonus combo box
             for (int i = 0; i < swp.eduBonus.Length / 2; i++)
             {
-                cmbEduBonus.Items.Add(swp.eduBonus[i, 0]);
+                cklEduBonus.Items.Add(swp.eduBonus[i, 0]);
             }
 
             // initialize region combo box
@@ -216,11 +217,7 @@ namespace ImmManager
             lblEducationPoints.Text = Scoring.getScore(swp.education, cmbEducaton.SelectedIndex).ToString();
             updateTotalScore();
         }
-        private void cmbEduBonus_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            lblEduBonusPoints.Text = Scoring.getScore(swp.eduBonus, cmbEduBonus.SelectedIndex).ToString();
-            updateTotalScore();
-        }
+
         private void cmbRegion_SelectionChangeCommitted(object sender, EventArgs e)
         {
             lblRegionalPoints.Text = Scoring.getScore(swp.region, cmbRegion.SelectedIndex).ToString();
@@ -357,7 +354,9 @@ namespace ImmManager
             int educationPoints = int.Parse(lblEducationPoints.Text);
             int clbPoints = int.Parse(lblCLBpoints.Text);
             int edubns = int.Parse(lblEduBonusPoints.Text);
-            lblTotalPoints.Text = (nocbonus + joblevel + top100 + currentWKPoints + wagePoints + regionPoints + directWKExpPoints + cndExpPoints + educationPoints + edubns + clbPoints).ToString();
+            int eduPoints = (edubns + educationPoints) > 25 ? 25 : (edubns + educationPoints);
+            lblEduPoints.Text = eduPoints.ToString();
+            lblTotalPoints.Text = (nocbonus + joblevel + top100 + currentWKPoints + wagePoints + regionPoints + directWKExpPoints + cndExpPoints + eduPoints + clbPoints).ToString();
 
         }
         private void NOCScoreCalculation()
@@ -697,61 +696,76 @@ namespace ImmManager
             }
             if (int.Parse(inTop100Score.Text) != 0) sw.Intop100 = true;
             else sw.Intop100 = false;
-           
-            //sw.SkillLevel=char.Parse(lblJobLevel.Text);
-            //if (cbxCurrentWork.Checked) sw.CurrentWorkInBCPosition = true;
-            //else sw.CurrentWorkInBCPosition =false;
 
-            //if(txtWage.Text!="") sw.Wage = float.Parse(txtWage.Text);
-            //else
-            //{
-            //    MessageBox.Show("Pleae input annual wage");
-            //    return;
-            //}
+            sw.SkillLevel = char.Parse(lblJobLevel.Text);
+            if(cbxCurrentWork.Checked) sw.CurrentWorkInBCPosition = true;
+            else sw.CurrentWorkInBCPosition = false;
 
-            //if (cmbRegion.SelectedIndex > -1)
-            //{
+            if(txtWage.Text != "")
+            {
+                sw.Wage = float.Parse(txtWage.Text);
+                sw.WagePoints = int.Parse(lblWagePoints.Text);
+            }
+            else
+            {
+                MessageBox.Show("Pleae input annual wage");
+                return;
+            }
+
+            if(cmbRegion.SelectedIndex > -1)
+            {
+
+                sw.Region = swp.region[cmbRegion.SelectedIndex, 0];
+            }
+            else
+            {
+                MessageBox.Show("Pleae select the work region");
+                return;
+            }
+
+            if(txtDirectWorkExp.Text != "") sw.DirectWorkExperience = float.Parse(txtDirectWorkExp.Text);
+            else
+            {
+                MessageBox.Show("Pleae input direct work experience");
+                return;
+            }
+
+            if(cbxCanadianExp.Checked) sw.OneYearDirectExperienceInCanada = true;
+            else sw.OneYearDirectExperienceInCanada = false;
+
+            if(cmbEducaton.SelectedIndex > -1)
+            {
+                sw.Education = swp.education[cmbEducaton.SelectedIndex, 0];
+            }
+            else
+            {
+                MessageBox.Show("Pleae select education level");
+                return;
+            }
+
+            if(cklEduBonus.SelectedIndex > -1) {
+                foreach(object itemChecked in cklEduBonus.CheckedItems)
+                {
+                    DataRowView castedItem = itemChecked as DataRowView;
+                    int index = cklEduBonus.Items.IndexOf(itemChecked);
+                    sw.EducationBonus = sw.EducationBonus+swp.eduBonus[index, 0]+"\n";
+
+                }
+                sw.EducationBonusPoints = int.Parse(lblEduBonusPoints.Text);
                 
-            //    sw.Region = swp.region[cmbRegion.SelectedIndex,0];
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Pleae select the work region");
-            //    return;
-            //}
 
-            //if (txtDirectWorkExp.Text!="") sw.DirectWorkExperience = float.Parse(txtDirectWorkExp.Text);
-            //else
-            //{
-            //    MessageBox.Show("Pleae input direct work experience");
-            //    return;
-            //}
-
-            //if (cbxCanadianExp.Checked) sw.OneYearDirectExperienceInCanada = true;
-            //else sw.OneYearDirectExperienceInCanada = false;
-
-            //if (cmbEducaton.SelectedIndex > -1)
-            //{
-            //    sw.Education = swp.education[cmbEducaton.SelectedIndex,0];
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Pleae select education level");
-            //    return;
-            //}
-
-            //if (cmbEduBonus.SelectedIndex > -1) sw.EducationBonus = swp.eduBonus[cmbEduBonus.SelectedIndex,0];
-            //else
-            //{
-            //    MessageBox.Show("Pleae select education bonus");
-            //    return;
-            //}
-            //if (txtCLBLevel.Text != "") sw.CLB = int.Parse(txtCLBLevel.Text);
-            //else
-            //{
-            //    MessageBox.Show("Pleae input CLB level");
-            //    return;
-            //}
+            }
+            else
+            {
+                MessageBox.Show("Pleae select education bonus");
+                return;
+            }
+            if(txtCLBLevel.Text != "") sw.CLB = int.Parse(txtCLBLevel.Text);
+            else
+            {
+                MessageBox.Show("Pleae input CLB level");
+                return;
+            }
 
 
             sw.NocBonusPoints=int.Parse(lblNOCBonusPoints.Text);
@@ -780,6 +794,29 @@ namespace ImmManager
 
             Report.generateReport(sw);
 
+        }
+
+        private void cklEduBonus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // lblEduBonusPoints.Text = Scoring.getScore(swp.edu, cmbEducaton.SelectedIndex).ToString();
+            int bonus = 0;
+            foreach(object itemChecked in cklEduBonus.CheckedItems)
+            {
+                DataRowView castedItem = itemChecked as DataRowView;
+                int index = cklEduBonus.Items.IndexOf(itemChecked);
+                bonus = bonus+Scoring.getScore(swp.eduBonus, index);
+                
+            }
+            lblEduBonusPoints.Text = bonus.ToString();;
+            updateTotalScore();
+
+        }
+
+       
+        private void llblNOCforMainduty_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            String url = "http://www5.hrsdc.gc.ca/NOC/English/NOC/2011/QuickSearch.aspx?val65="+txtNocBonus.Text;
+            Process.Start(url);
         }
     }
 }
